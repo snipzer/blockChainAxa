@@ -8,6 +8,9 @@
 const shim = require('fabric-shim');
 const util = require('util');
 
+const Http = new XMLHttpRequest();
+const url='http:localhost:3000/';
+
 let Chaincode = class {
 
   // The Init method is called when the Smart Contract 'fabcar' is instantiated by the blockchain network
@@ -56,11 +59,11 @@ let Chaincode = class {
     console.info('============= START : Initialize Ledger ===========');
     let annulations = [];
     annulations.push({
-      ticketNumber: '01',
+      flyNumber: '01',
       contracts: ["CON01", "CON02"]
     });
     annulations.push({
-      ticketNumber: '04',
+      flyNumber: '04',
       contracts: ["CON01", "CON02"]
     });
 
@@ -80,12 +83,19 @@ let Chaincode = class {
 
     var annulation = {
       docType: 'annulation',
-      ticketNumber: args[1],
+      flyNumber: args[1],
       contracts: args[2]
     };
 
     await stub.putState(args[0], Buffer.from(JSON.stringify(annulation)));
     // send remboursement
+    Http.open("POST", url, true);
+    http.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+    Http.send({toto: "titi"});
+    Http.onreadystatechange = (e) => {
+      console.log(Http.responseText)
+    }
+
     console.info('============= END : Create Annulation ===========');
   }
 
